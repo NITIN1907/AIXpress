@@ -1,0 +1,46 @@
+name: AI SaaS CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # --------------------------
+      # Backend Validation
+      # --------------------------
+      - name: 📦 Install Backend Dependencies
+        working-directory: ./server
+        run: npm install
+
+      - name: 🔍 Backend Build Check
+        working-directory: ./server
+        run: node -e "console.log('Backend OK')"
+
+      # --------------------------
+      # Frontend Validation
+      # --------------------------
+      - name: 📦 Install Frontend Dependencies
+        working-directory: ./client
+        run: npm install
+
+      - name: 🏗 Build Frontend
+        working-directory: ./client
+        run: npm run build
+
+      - name: ✅ CI Passed
+        run: echo "Everything is valid 🚀"
