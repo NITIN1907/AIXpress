@@ -4,7 +4,7 @@ import { clerkClient } from "@clerk/express";
 import axios from "axios";
 import FormData from "form-data";
 
-
+import fs from "fs/promises";
 import { PdfReader } from "pdfreader";
 import { v2 as cloudinary } from 'cloudinary';
 import { aiQueue } from "../queue/queue.js";
@@ -163,7 +163,7 @@ export const removeImageBackground = async (req, res) => {
         }
 
 
-        //using cloudinary api for removing the background in image
+        
 
         const { secure_url } = await cloudinary.uploader.upload(image.path, {
             transformation: [
@@ -201,7 +201,6 @@ export const removeImageObject = async (req, res) => {
         }
 
 
-        //using cloudinary api for removing the background in image
 
         const { public_id } = await cloudinary.uploader.upload(image.path)
 
@@ -213,7 +212,7 @@ export const removeImageObject = async (req, res) => {
 
         const imageUrl = cloudinary.url(public_id, {
             secure: true,
-            transformation: [{ effect: `gen_remove:${object}` }], // ✅ No underscore
+            transformation: [{ effect: `gen_remove:${object}` }], 
             resource_type: "image",
         });
 
@@ -277,14 +276,22 @@ export const pdfSummary = async (req, res) => {
       });
     }
 
-    // 🔥 Add to queue
+   
+    const upload = await cloudinary.uploader.upload(pdfFile.path, {
+      resource_type: "raw",
+      folder: "pdf-uploads",
+    });
+
+    
+    await fs.unlink(pdfFile.path);
+
+   
     const job = await aiQueue.add("pdf-summary", {
       userId,
-      filePath: pdfFile.path,
+      fileUrl: upload.secure_url,
       mode,
     });
 
- 
     return res.status(202).json({
       success: true,
       message: "PDF summary job started",
