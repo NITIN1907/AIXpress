@@ -47,6 +47,101 @@ AIxPress allows users to generate, enhance, and manipulate AI-powered content �
 
 ---
 
+## Without a queue:
+
+- HTTP request stays open for 20–60 seconds
+
+- Server threads get blocked
+
+- Multiple users = server crash
+
+- AI API rate limits get hit
+
+- Memory spikes
+
+- Bad user experience
+
+## with queue:
+ 1. Non-Blocking API (Fast Response)
+
+# Before:
+POST /pdf-summary → waits 30 seconds
+
+
+# Now:
+POST /pdf-summary → returns instantly (Job Created)
+
+
+# User gets:
+
+{
+  "status": "processing",
+  "jobId": "1234"
+}
+
+
+This improves:
+
+- UX
+
+- Server performance
+  
+2. Controlled Concurrency (Very Important)
+
+With BullMQ worker:
+
+new Worker("pdfQueue", processor, {
+  concurrency: 5
+})
+
+
+This means:
+
+- Only 5 AI jobs run at once
+
+- Prevents OpenAI rate limits
+
+- Prevents CPU spikes
+
+- Prevents memory crash
+
+3. Retry & Failure Handling
+
+If OpenAI fails:
+
+# BullMQ can:
+
+- Retry job 3 times
+
+- Move failed job to Dead Letter Queue
+
+- Log error
+
+# Without queue:
+
+- User loses request
+
+- You lose data
+
+- No tracking
+  
+4. Horizontal Scalability
+
+If traffic increases:
+
+You can scale like this:
+
+- 1 API Server
+- 5 Worker Servers
+- 1 Redis
+
+Each worker pulls jobs from Redis.
+
+More traffic?
+
+👉 Add more workers.
+
+---
 ## 🏗️ Tech Stack
 
 ### 🖥️ Frontend
