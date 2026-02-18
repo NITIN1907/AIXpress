@@ -8,8 +8,7 @@ AIxPress allows users to generate, enhance, and manipulate AI-powered content �
 
 ## 🌐 Live Demo
 
-🔗 **Frontend:** https://your-vercel-link.vercel.app  
-🔗 **Backend API:** https://your-render-link.onrender.com  
+🔗 ai-xpress.vercel.app
 
 ---
 
