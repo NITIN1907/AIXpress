@@ -64,15 +64,15 @@ AIxPress allows users to generate, enhance, and manipulate AI-powered content �
 ## with queue:
  1. Non-Blocking API (Fast Response)
 
-# Before:
+### Before:
 POST /pdf-summary → waits 30 seconds
 
 
-# Now:
+### Now:
 POST /pdf-summary → returns instantly (Job Created)
 
 
-# User gets:
+### User gets:
 
 {
   "status": "processing",
@@ -109,7 +109,7 @@ This means:
 
 If OpenAI fails:
 
-# BullMQ can:
+### BullMQ can:
 
 - Retry job 3 times
 
@@ -117,7 +117,7 @@ If OpenAI fails:
 
 - Log error
 
-# Without queue:
+### Without queue:
 
 - User loses request
 
